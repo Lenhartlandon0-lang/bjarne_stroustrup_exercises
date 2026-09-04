@@ -28,8 +28,27 @@ char make_random_char() {
 
 std::vector<char> tokenize_input( std::string input ) {
     
-    u_long len = input.size();
+    //lossy conversion because input size shouldn't be that big anyway
+    short len = input.size();
+    
+    //declare char vector for comparison
+    std::vector<char> userguess{};
+    
+    //Check for valid length (we could probably change this later)
+    if ( len <= 0 || len > 4 ) {
+        throw std::invalid_argument("Please only enter up to 4 chars at a time.");
+    }
+    
+    for ( int i{}; i < len; i++ ) {
+        
+        char c = input[i]; // index-by-index conversion to char
+        userguess.push_back(c); // push char into user guess
+        
+    }
+    return userguess;
 }
+
+
 int main() {
     
     std::vector<char> guessthis{}; // vector where random chars will be stored
