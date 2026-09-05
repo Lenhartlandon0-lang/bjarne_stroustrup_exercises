@@ -31,6 +31,7 @@
 				binarysearch.cpp,
 				bools.cpp,
 				buggypieceofshit.cpp,
+				bullsandchars.cpp,
 				bullsandcowss.cpp,
 				calculator.cpp,
 				Censoring.cpp,
