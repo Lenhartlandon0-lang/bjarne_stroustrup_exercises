@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 class graphics_buffer {
 private:
     
@@ -66,23 +67,102 @@ public:
         }
     }
     
-    char* data() { return m_data; }
-    const char* data() const { return m_data; }
+    char* data() { return m_data; } // method for access (copied from array_)
+    const char* data() const { return m_data; } // const ver
     
-    size_t size() const { return m_size; }
-    size_t capacity() const { return m_cap; }
+    size_t size() const { return m_size; } // current size
+    size_t capacity() const { return m_cap; } // maximum capacity
+    
+    char& operator[] ( size_t index ) { // dereference-char-returning [] operator
+        return *(this->data() + index); // graphics buffer.data() + index = value at index
+    }
+    
 };
 
+
+// A graphics_buffer object is basically just an array of 10k garbage chars.
+// (or more, or less)
+// in order to create it into a 2d plane, we need x and y coordinates.
+
+uint fus(size_t n) {
+    // fus stand for fast unsigned integer square root
+    // it is also part of the dragonborn chant in skyrim
+    uint res = 0;
+    uint bit = 1U << 30; // 2^30
+    
+    // since bit starts at 2^30, rightshift it until its less than n
+    while ( bit > n ) {
+        bit >>= 2;
+    }
+    
+    while ( bit != 0 )
+    {
+        if ( n >= res + bit ) {
+            // if n is greater than or equal to res + bit,
+            // subtract n by their sum ()
+            // and rightshift res 1 ()
+            n -= res + bit;
+            res = ( res >> 1 ) + bit;
+        }
+        
+        else {
+            // if n is not greater, we only need to rightshift once to get an approximate result (res = res/2)
+            res >>= 1;
+        }
+        // always rightshift bit
+        // (bit = bit/4)
+        bit >>= 2;
+    }
+    return res;
+}
 
 class Plane {
-    
-public:
-    // public values
-    
 private:
     // private values
+    graphics_buffer gb; //array for manipulation (default size = 10000 chars)
+    // max size of array
+public:
+    const size_t cap = gb.capacity();
+    const uint sq = fus(cap);
+    graphics_buffer initialize() {
+        for ( int i{}; i < cap; i++ ) {
+            gb[i] = ' ';
+        }
+        return gb;
+    }
     
+    graphics_buffer plot( int x, int y ) {
+        size_t index = x * sq + y;
+        gb[index] = '.';
+        return gb;
+    }
+    
+    graphics_buffer plot( int index ) {
+        gb[index] = '.';
+        return gb;
+    }
+    
+    void draw() {
+        for ( int i{}; i < cap; i++ ) {
+            if ( i % sq == 0 && i != 0) {
+                std::cout << '\n';
+            }
+            std::cout << gb[i];
+        }
+    }
+    // public values
 };
 int main() {
-    graphics_buffer gb;
+    Plane p;
+    p.initialize();
+    for ( int x{}; x < p.sq; x++ ) {
+        for ( int y{}; y < p.sq; y++) {
+            if ( y == x ) {
+                p.plot(x, y);
+            }
+        }
+    }
+    p.draw();
+    std::cout << '\n';
 }
+

@@ -28,6 +28,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AIerrorc.cpp,
+				array_tomfoolery.cpp,
 				binarysearch.cpp,
 				bools.cpp,
 				buggypieceofshit.cpp,
